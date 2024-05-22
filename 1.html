@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: url('./icon//1.gif');
+      box-sizing: border-box;
+    }
+  </style>
+  <body>
+    <canvas></canvas>
+  </body>
+</html>
+
+<script>
+  let canvas = document.querySelector('canvas')
+  let ctx = canvas.getContext('2d')
+
+  async function drawBranch(v0, len, thick, angle, style) {
+    if (thick < 2.5) {
+      ctx.beginPath()
+      // 使用二次贝塞尔曲线绘制一个花瓣形状
+      ctx.moveTo(v0[0], v0[1])
+      ctx.bezierCurveTo(
+        v0[0] + 5,
+        v0[1] + 1,
+        v0[0] + 10,
+        v0[1] + 5,
+        v0[0] + 15,
+        v0[1] - 5
+      )
+      ctx.bezierCurveTo(
+        v0[0] + 1,
+        v0[1] - 5,
+        v0[0] + 5,
+        v0[1] - 10,
+        v0[0],
+        v0[1]
+      )
+      ctx.fillStyle = 'rgba(128,128,0,0.8)'
+      ctx.fill()
+      ctx.beginPath()
+      ctx.moveTo(v0[0], v0[1])
+      ctx.lineTo(v0[0] + 15, v0[1] - 5)
+      ctx.strokeStyle = style
+      ctx.lineWidth = 0.3
+      ctx.stroke()
+      ctx.stroke()
+      return
+    }
+    if (thick < 10 && Math.round() < 0.2) {
+      return
+    }
+
+    ctx.beginPath()
+    ctx.moveTo(...v0)
+
+    let v1 = computed(v0[0], v0[1], len, angle)
+    ctx.lineTo(...v1)
+    if (thick < 10) {
+      ctx.strokeStyle = 'rgba(128,255,255,0.3)'
+    } else {
+      ctx.strokeStyle = style
+    }
+    ctx.strokeStyle = style
+    ctx.lineWidth = thick
+    ctx.lineCap = 'round'
+    ctx.stroke()
+    drawBranch(
+      v1,
+      len * 0.8,
+      thick * 0.75,
+      angle + Math.random() * 40,
+      ctx.strokeStyle
+    )
+    drawBranch(
+      v1,
+      len * 0.8,
+      thick * 0.75,
+      angle - Math.random() * 40,
+      ctx.strokeStyle
+    )
+  }
+
+  function computed(a, b, len, angle) {
+    return [
+      a + len * Math.cos((angle * Math.PI) / 180),
+      b + len * Math.sin((angle * Math.PI) / 180),
+    ]
+  }
+  // drawBranch([0, 0], 200, 30, 90, 'pink')
+  // window.onresize = function () {
+  //   if (ctx) {
+  //     init()
+  //     ctx.clearRect(0, 0, canvas.width, canvas.height)
+  //   }
+  //   drawBranch([0, 0], 200, 30, 90, 'pink')
+  // }
+  // requestAnimationFrame(() => {
+  //   if (ctx) {
+  //     init()
+  //     ctx.clearRect(0, 0, canvas.width, canvas.height)
+  //   }
+  //   drawBranch([0, 0], 200, 50, 90, 'rgba(0,0,0,0.4)')
+  // })
+
+  function methodColor() {
+    return (
+      '#' +
+      (function (color) {
+        return new Array(7 - color.length).join('0') + color
+      })(((Math.random() * 0x1000000) | 0).toString(16))
+    )
+  }
+
+  
+  function init() {
+    canvas.width = document.documentElement.clientWidth * devicePixelRatio
+    canvas.height =
+      (document.documentElement.clientHeight - 10) * devicePixelRatio
+    ctx.translate(canvas.width / 2, canvas.height - 10)
+    ctx.scale(1, -1)
+    drawTree()
+  }
+  function drawTree() {
+    // 在这里添加绘制树的代码
+    drawBranch([0, 0], 200, 40, 90, 'rgba(55,60,0,0.8)')
+  }
+  init()
+
+</script>
